@@ -22,3 +22,7 @@ export function shareNote(noteId, email, permission) {
 export function addNote(note) {
   return apiRequest('notes/add', 'POST', note);
 }
+
+export function updateNote(noteId, updatedNote) {
+  return apiRequest(`notes/update/${noteId}`, 'PUT', updatedNote);
+}

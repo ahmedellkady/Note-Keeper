@@ -1,16 +1,73 @@
-// Save note content every 2 seconds
-setInterval(() => {
-    const content = document.getElementById("editor").innerHTML;
-    localStorage.setItem("note-content", content);
-}, 2000);
+import { updateNote } from "../api/notesApi.js";
+
+let originalTitle = '';
+let originalContent = '';
 
 document.addEventListener("DOMContentLoaded", () => {
     const note = JSON.parse(localStorage.getItem("currentNote"));
     if (note && note.content) {
         document.getElementById("note-title").textContent = note.title;
         document.getElementById("editor").innerHTML = note.content;
+
+        originalTitle = note.title;
+        originalContent = note.content;
     }
+
+    const titleEl = document.getElementById("note-title");
+
+    titleEl.addEventListener("blur", handleTitleSave);
+    titleEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            titleEl.blur();
+        }
+    });
+
+    let saveTimeout = null;
+    let lastSavedContent = document.getElementById("editor").innerHTML;
+
+    document.getElementById("editor").addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+
+        saveTimeout = setTimeout(() => {
+            const currentContent = document.getElementById("editor").innerHTML;
+
+            if (currentContent !== lastSavedContent) {
+                localStorage.setItem("note-content", currentContent);
+                lastSavedContent = currentContent;
+                console.log("Auto-saved to localStorage.");
+            }
+        }, 2000);
+    });
+
+    document.querySelector("button[data-format='bold']").addEventListener("click", () => format("bold"));
+    document.querySelector("button[data-format='italic']").addEventListener("click", () => format("italic"));
+    document.querySelector("button[data-format='underline']").addEventListener("click", () => format("underline"));
+    document.querySelector("button[onclick*='highlight']").addEventListener("click", highlight);
+    document.querySelector("button[title='Insert Image']").addEventListener("click", insertImage);
+    document.querySelector("button[title='Insert List']").addEventListener("click", insertList);
+    document.querySelector("button[title='Insert Table']").addEventListener("click", insertTable);
+    document.querySelector("select").addEventListener("change", e => applyFormat(e.target.value));
+    document.getElementById("imageInput").addEventListener("change", handleImageUpload);
+    document.getElementById("saveNoteBtn").addEventListener("click", saveNote);
 });
+
+function handleTitleSave() {
+    const note = JSON.parse(localStorage.getItem("currentNote"));
+    const newTitle = document.getElementById("note-title").textContent.trim();
+
+    if (!newTitle || newTitle === note.title) {
+        return; // nothing changed or empty
+    }
+
+    const updatedNote = {
+        ...note,
+        title: newTitle,
+    };
+
+    localStorage.setItem("currentNote", JSON.stringify(updatedNote));
+    console.log("Title saved to localStorage.");
+}
 
 // Update formatting button state
 document.addEventListener("selectionchange", updateFormattingState);
@@ -175,63 +232,109 @@ document.addEventListener("click", function (e) {
 });
 
 function showTableControls(table) {
-    const controls = document.createElement("div");
-    controls.className = "table-controls";
-    controls.innerHTML = `
-      <button class="table-btn" onclick="addRow(this)">
-        <i class="fas fa-plus"></i> Row
-      </button>
-      <button class="table-btn" onclick="addColumn(this)">
-        <i class="fas fa-plus"></i> Col
-      </button>
-      <button class="table-btn danger" onclick="deleteRow(this)">
-        <i class="fas fa-minus"></i> Row
-      </button>
-      <button class="table-btn danger" onclick="deleteColumn(this)">
-        <i class="fas fa-minus"></i> Col
-      </button>`;
+  const controls = document.createElement("div");
+  controls.className = "table-controls";
+  controls.innerHTML = `
+    <button class="table-btn" data-action="add-row"><i class="fas fa-plus"></i> Row</button>
+    <button class="table-btn" data-action="add-col"><i class="fas fa-plus"></i> Col</button>
+    <button class="table-btn danger" data-action="del-row"><i class="fas fa-minus"></i> Row</button>
+    <button class="table-btn danger" data-action="del-col"><i class="fas fa-minus"></i> Col</button>
+  `;
 
-    table.parentElement.insertBefore(controls, table);
-    controls.tableRef = table;
-}
+  table.parentElement.insertBefore(controls, table);
+  controls.tableRef = table;
 
-function addRow(button) {
-    const table = button.parentElement.tableRef;
-    const row = table.insertRow();
-    const colCount = table.rows[0].cells.length;
-    for (let i = 0; i < colCount; i++) {
-        row.insertCell().innerHTML = "&nbsp;";
+  controls.addEventListener("click", (e) => {
+    const action = e.target.closest("button")?.dataset.action;
+    if (!action) return;
+
+    switch (action) {
+      case "add-row":
+        addRow(controls);
+        break;
+      case "add-col":
+        addColumn(controls);
+        break;
+      case "del-row":
+        deleteRow(controls);
+        break;
+      case "del-col":
+        deleteColumn(controls);
+        break;
     }
+  });
 }
 
-function addColumn(button) {
-    const table = button.parentElement.tableRef;
+function addRow(controls) {
+  const table = controls.tableRef; // ✅ this is correct
+  const row = table.insertRow();
+  const colCount = table.rows[0].cells.length;
+  for (let i = 0; i < colCount; i++) {
+    row.insertCell().innerHTML = "&nbsp;";
+  }
+}
+
+function addColumn(controls) {
+  const table = controls.tableRef;
+  for (let row of table.rows) {
+    row.insertCell().innerHTML = "&nbsp;";
+  }
+  const colCount = table.rows[0].cells.length;
+  const equalWidth = 100 / colCount + "%";
+  for (let row of table.rows) {
+    for (let cell of row.cells) {
+      cell.style.width = equalWidth;
+    }
+  }
+  table.style.tableLayout = "fixed";
+}
+
+function deleteRow(controls) {
+  const table = controls.tableRef;
+  if (table.rows.length > 1) {
+    table.deleteRow(table.rows.length - 1);
+  }
+}
+
+function deleteColumn(controls) {
+  const table = controls.tableRef;
+  const colCount = table.rows[0].cells.length;
+  if (colCount > 1) {
     for (let row of table.rows) {
-        row.insertCell().innerHTML = "&nbsp;";
+      row.deleteCell(colCount - 1);
     }
-    const colCount = table.rows[0].cells.length;
-    const equalWidth = 100 / colCount + "%";
-    for (let row of table.rows) {
-        for (let cell of row.cells) {
-            cell.style.width = equalWidth;
-        }
-    }
-    table.style.tableLayout = "fixed";
+  }
 }
 
-function deleteRow(button) {
-    const table = button.parentElement.tableRef;
-    if (table.rows.length > 1) {
-        table.deleteRow(table.rows.length - 1);
-    }
+function saveNote() {
+  const note = JSON.parse(localStorage.getItem("currentNote"));
+  const updatedTitle = document.getElementById("note-title").textContent.trim();
+  const updatedContent = document.getElementById("editor").innerHTML;
+
+  updateNote(note.id, {
+    title: updatedTitle,
+    content: updatedContent,
+    tag: note.tag
+  })
+    .then(updated => {
+      localStorage.setItem("currentNote", JSON.stringify(updated));
+      console.log("Note saved successfully to backend.");
+      alert("Note saved successfully.");
+    })
+    .catch(err => {
+      console.error("Failed to save note:", err.message);
+      alert("Error saving note. Please try again.");
+    });
 }
 
-function deleteColumn(button) {
-    const table = button.parentElement.tableRef;
-    const colCount = table.rows[0].cells.length;
-    if (colCount > 1) {
-        for (let row of table.rows) {
-            row.deleteCell(colCount - 1);
-        }
+window.addEventListener("beforeunload", (e) => {
+    const currentTitle = document.getElementById("note-title").textContent.trim();
+    const currentContent = document.getElementById("editor").innerHTML;
+
+    const hasUnsavedChanges = currentTitle !== originalTitle || currentContent !== originalContent;
+
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
     }
-}
+});
