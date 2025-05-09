@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Note Manager</title>
+    <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="css/components/navbar.css">
+    <link rel="stylesheet" href="css/components/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-wrapper">
+
+        <div data-include="components/navbar.html"></div>
+
+        <div class="page-container">
+            <header class="top-bar">
+                <div class="top-left">
+                    <button class="new-note">+ New Note</button>
+                    <input type="text" class="search" placeholder="Search notes" />
+                    <select class="filter">
+                        <option value="">Tags</option>
+                        <option>Work</option>
+                        <option>Personal</option>
+                    </select>
+                    <select class="filter">
+                        <option value="">Shared With</option>
+                        <option>Only Me</option>
+                        <option>Shared by Others</option>
+                    </select>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <section class="notes-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Owner</th>
+                                <th>Last Modified</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Meeting Notes</td>
+                                <td>Me</td>
+                                <td>2 hours ago</td>
+                                <td>
+                                    <button class="edit"><i class="fas fa-pen"></i></button>
+                                    <button class="delete"><i class="fas fa-trash"></i></button>
+                                    <button class="history"><i class="fas fa-clock-rotate-left"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="versionPanel" class="version-history-panel hidden">
+                        <h3>Version History - [Note Title]</h3>
+                        <ul class="version-list">
+                            <li>Today 14:32 <button>Restore</button></li>
+                            <li>Today 13:12 <button>Restore</button></li>
+                        </ul>
+                    </div>
+
+                </section>
+            </main>
+        </div>
+        <div id="newNoteModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Create New Note</h2>
+                <label>Title:</label>
+                <input type="text" id="noteTitle" placeholder="Enter note title" />
+
+                <label>Tags:</label>
+                <div class="tags">
+                    <label><input type="checkbox" value="Work" /> Work</label>
+                    <label><input type="checkbox" value="Personal" /> Personal</label>
+                    <label><input type="checkbox" value="Ideas" /> Ideas</label>
+                </div>
+
+                <div class="modal-actions">
+                    <button onclick="createNote()">Create</button>
+                    <button onclick="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div id="shareModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Share Note</h2>
+
+                <label for="shareWith">Share with:</label>
+                <input type="text" id="shareWith" placeholder="Enter username or email" />
+
+                <label for="permission">Permission:</label>
+                <select id="permission">
+                    <option value="view">View</option>
+                    <option value="edit">Edit</option>
+                </select>
+
+                <div class="modal-actions">
+                    <button onclick="shareNote()">Share</button>
+                    <button onclick="closeShareModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div data-include="components/footer.html"></div>
+    </div>
+
+    <script src="js/component-loader.js"></script>
+    <script src="js/pages/index.js"></script>
+</body>
+
+</html>

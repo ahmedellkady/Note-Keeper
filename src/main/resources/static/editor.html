@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Note Editor</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/components/navbar.css">
+    <link rel="stylesheet" href="css/components/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-wrapper">
+
+        <div data-include="components/navbar.html"></div>
+        <div class="container">
+            <header class="header">
+                <h1>Notes</h1>
+            </header>
+
+            <div class="toolbar">
+                <select onchange="applyFormat(this.value)">
+                    <option value="">Format</option>
+                    <option value="h1">Title</option>
+                    <option value="h2">Heading</option>
+                    <option value="h3">Subheading</option>
+                    <option value="p">Body</option>
+                </select>
+
+                <button data-format="bold" onclick="format('bold')"><b>B</b></button>
+                <button data-format="italic" onclick="format('italic')"><i>I</i></button>
+                <button data-format="underline" onclick="format('underline')"><u>U</u></button>
+                <button onclick="highlight()">A</button>
+
+                <button onclick="insertImage()" title="Insert Image"><i class="fas fa-image"></i></button>
+                <button onclick="insertList()" title="Insert List"><i class="fas fa-list-ul"></i></button>
+                <button onclick="insertTable()" title="Insert Table"><i class="fas fa-table"></i></button>
+                <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" hidden />
+            </div>
+
+            <div id="editor" class="editor" contenteditable="true">
+
+            </div>
+        </div>
+        
+        <div data-include="components/footer.html"></div>
+    </div>
+
+    <script src="js/component-loader.js"></script>
+    <script src="js/pages/editor.js"></script>
+</body>
+
+</html>
