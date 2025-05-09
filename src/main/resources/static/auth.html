@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Donation Platform - Login</title>
+    <title>Note Keeper - Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>login-Page</title>
     <link rel="stylesheet" href="css/styles.css">
@@ -32,7 +32,7 @@
                 <div class="form-content">
                     <div class="login-form">
                         <div class="title">Login</div>
-                        <form id="loginForm" method="POST">
+                        <form id="loginForm">
                             <div class="input-boxes">
                                 <div class="input-box">
                                     <i class="fas fa-envelope"></i>
@@ -45,7 +45,7 @@
                                         placeholder="Enter your password" required>
                                 </div>
                                 <div class="text"><a href="#">Forgot password?</a></div>
-                                <div id="loginError" class="error-message" style="display: none;"></div>
+                                <div id="loginError" class="error-message" style="display: none;">Failed to login</div>
                                 <div class="button input-box">
                                     <input type="submit" id="loginSubmit" value="Login">
                                 </div>
@@ -56,8 +56,8 @@
                     </div>
                     <div class="signup-form">
                         <div class="title">Signup</div>
-                        <div id="signupMessage" style="display: none;">NOW YOU HAVE TO LOGIN</div>
-                        <form id="signupForm" method="post">
+                        <div id="signupMessage" style="display: none; color: #fed23b;">REGISTERED SUCCESSFULLY</div>
+                        <form id="signupForm">
                             <div class="input-boxes">
 
                                 <!-- Name -->
