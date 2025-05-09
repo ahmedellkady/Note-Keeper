@@ -29,9 +29,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             tr.dataset.tag = note.tag;
             tr.innerHTML = `
         <td class="clickable-title"><b>${note.title}</b></td>
-        <td>${user.name}</td>
+        <td>${note.sharedWithName}</td>
         <td>${new Date(note.updatedAt).toLocaleString()}</td>
         <td>${note.tag}</td>
+        <td>${note.permission}</td>
         <td>
           <button class="edit"><i class="fas fa-pen"></i></button>
           <button class="history"><i class="fas fa-clock-rotate-left"></i></button>

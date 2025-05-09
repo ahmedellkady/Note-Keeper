@@ -7,4 +7,5 @@ import java.util.*;
 
 public interface UserJpaInterface extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
+    Optional<UserEntity> findById(Long id);
 }

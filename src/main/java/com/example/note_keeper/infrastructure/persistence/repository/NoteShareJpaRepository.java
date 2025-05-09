@@ -8,6 +8,7 @@ import com.example.note_keeper.infrastructure.persistence.entity.UserEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -23,14 +24,17 @@ public class NoteShareJpaRepository implements NoteShareRepository {
 
     @Override
     public NoteShare save(NoteShare share) {
-        NoteShareEntity entity = new NoteShareEntity();
+        UserEntity user = jpaUser.findByEmail(share.getSharedWithUserEmail())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "User not found with email: " + share.getSharedWithUserEmail()));
 
         NoteEntity note = new NoteEntity();
         note.setId(share.getNoteId());
 
-        UserEntity user = jpaUser.findByEmail(share.getSharedWithUserEmail())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "User not found with email: " + share.getSharedWithUserEmail()));
+        Optional<NoteShareEntity> existingShareOpt = jpa.findByNote_IdAndSharedWithUser_Email(
+                share.getNoteId(), share.getSharedWithUserEmail());
+
+        NoteShareEntity entity = existingShareOpt.orElse(new NoteShareEntity());
 
         entity.setNote(note);
         entity.setSharedWithUser(user);
@@ -41,6 +45,7 @@ public class NoteShareJpaRepository implements NoteShareRepository {
 
         return share;
     }
+
 
     @Override
     public List<NoteShare> findByUserId(Long userId) {
