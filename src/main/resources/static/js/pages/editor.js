@@ -5,6 +5,11 @@ let originalContent = '';
 
 document.addEventListener("DOMContentLoaded", () => {
     const note = JSON.parse(localStorage.getItem("currentNote"));
+
+    if (note && note.permission === "VIEW") {
+        disableEditor();
+    }
+
     if (note && note.content) {
         document.getElementById("note-title").textContent = note.title;
         document.getElementById("editor").innerHTML = note.content;
@@ -221,7 +226,9 @@ function insertHTMLAtCursor(html) {
 }
 
 // Table controls
-document.addEventListener("click", function (e) {
+document.addEventListener("click", handleTableClick);
+
+function handleTableClick(e) {
     const existingControls = document.querySelector(".table-controls");
     if (existingControls) existingControls.remove();
 
@@ -229,102 +236,102 @@ document.addEventListener("click", function (e) {
     if (table) {
         showTableControls(table);
     }
-});
+}
 
 function showTableControls(table) {
-  const controls = document.createElement("div");
-  controls.className = "table-controls";
-  controls.innerHTML = `
+    const controls = document.createElement("div");
+    controls.className = "table-controls";
+    controls.innerHTML = `
     <button class="table-btn" data-action="add-row"><i class="fas fa-plus"></i> Row</button>
     <button class="table-btn" data-action="add-col"><i class="fas fa-plus"></i> Col</button>
     <button class="table-btn danger" data-action="del-row"><i class="fas fa-minus"></i> Row</button>
     <button class="table-btn danger" data-action="del-col"><i class="fas fa-minus"></i> Col</button>
   `;
 
-  table.parentElement.insertBefore(controls, table);
-  controls.tableRef = table;
+    table.parentElement.insertBefore(controls, table);
+    controls.tableRef = table;
 
-  controls.addEventListener("click", (e) => {
-    const action = e.target.closest("button")?.dataset.action;
-    if (!action) return;
+    controls.addEventListener("click", (e) => {
+        const action = e.target.closest("button")?.dataset.action;
+        if (!action) return;
 
-    switch (action) {
-      case "add-row":
-        addRow(controls);
-        break;
-      case "add-col":
-        addColumn(controls);
-        break;
-      case "del-row":
-        deleteRow(controls);
-        break;
-      case "del-col":
-        deleteColumn(controls);
-        break;
-    }
-  });
+        switch (action) {
+            case "add-row":
+                addRow(controls);
+                break;
+            case "add-col":
+                addColumn(controls);
+                break;
+            case "del-row":
+                deleteRow(controls);
+                break;
+            case "del-col":
+                deleteColumn(controls);
+                break;
+        }
+    });
 }
 
 function addRow(controls) {
-  const table = controls.tableRef; // ✅ this is correct
-  const row = table.insertRow();
-  const colCount = table.rows[0].cells.length;
-  for (let i = 0; i < colCount; i++) {
-    row.insertCell().innerHTML = "&nbsp;";
-  }
+    const table = controls.tableRef;
+    const row = table.insertRow();
+    const colCount = table.rows[0].cells.length;
+    for (let i = 0; i < colCount; i++) {
+        row.insertCell().innerHTML = "&nbsp;";
+    }
 }
 
 function addColumn(controls) {
-  const table = controls.tableRef;
-  for (let row of table.rows) {
-    row.insertCell().innerHTML = "&nbsp;";
-  }
-  const colCount = table.rows[0].cells.length;
-  const equalWidth = 100 / colCount + "%";
-  for (let row of table.rows) {
-    for (let cell of row.cells) {
-      cell.style.width = equalWidth;
+    const table = controls.tableRef;
+    for (let row of table.rows) {
+        row.insertCell().innerHTML = "&nbsp;";
     }
-  }
-  table.style.tableLayout = "fixed";
+    const colCount = table.rows[0].cells.length;
+    const equalWidth = 100 / colCount + "%";
+    for (let row of table.rows) {
+        for (let cell of row.cells) {
+            cell.style.width = equalWidth;
+        }
+    }
+    table.style.tableLayout = "fixed";
 }
 
 function deleteRow(controls) {
-  const table = controls.tableRef;
-  if (table.rows.length > 1) {
-    table.deleteRow(table.rows.length - 1);
-  }
+    const table = controls.tableRef;
+    if (table.rows.length > 1) {
+        table.deleteRow(table.rows.length - 1);
+    }
 }
 
 function deleteColumn(controls) {
-  const table = controls.tableRef;
-  const colCount = table.rows[0].cells.length;
-  if (colCount > 1) {
-    for (let row of table.rows) {
-      row.deleteCell(colCount - 1);
+    const table = controls.tableRef;
+    const colCount = table.rows[0].cells.length;
+    if (colCount > 1) {
+        for (let row of table.rows) {
+            row.deleteCell(colCount - 1);
+        }
     }
-  }
 }
 
 function saveNote() {
-  const note = JSON.parse(localStorage.getItem("currentNote"));
-  const updatedTitle = document.getElementById("note-title").textContent.trim();
-  const updatedContent = document.getElementById("editor").innerHTML;
+    const note = JSON.parse(localStorage.getItem("currentNote"));
+    const updatedTitle = document.getElementById("note-title").textContent.trim();
+    const updatedContent = document.getElementById("editor").innerHTML;
 
-  updateNote(note.id, {
-    title: updatedTitle,
-    content: updatedContent,
-    tag: note.tag
-  })
-    .then(updated => {
-      localStorage.setItem("currentNote", JSON.stringify(updated));
-      console.log("Note saved successfully to backend.");
-      alert("Note saved successfully.");
+    updateNote(note.id, {
+        title: updatedTitle,
+        content: updatedContent,
+        tag: note.tag
     })
-    .catch(err => {
-      console.error("Failed to save note:", err.message);
-      alert("Error saving note. Please try again.");
-    });
+        .then(updated => {
+            localStorage.setItem("currentNote", JSON.stringify(updated));
+            console.log("Note saved successfully to backend.");
+            alert("Note saved successfully.");
+        })
+        .catch(err => {
+            console.error("Failed to save note:", err.message);
+            alert("Error saving note. Please try again.");
+        });
 }
 
 window.addEventListener("beforeunload", (e) => {
@@ -338,3 +345,26 @@ window.addEventListener("beforeunload", (e) => {
         e.returnValue = '';
     }
 });
+
+function disableEditor() {
+    // Make title and editor read-only
+    document.getElementById("note-title").setAttribute("contenteditable", "false");
+    document.getElementById("editor").setAttribute("contenteditable", "false");
+
+    // Disable all formatting buttons
+    document.querySelectorAll("button[data-format], button[onclick], button[title]").forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add("disabled");
+    });
+
+    // Disable dropdowns and inputs
+    document.querySelectorAll("select, input[type='color'], input[type='file']").forEach(el => {
+        el.disabled = true;
+    });
+
+    // Disable save
+    document.getElementById("saveNoteBtn").disabled = true;
+
+    // Remove ability to open table controls
+    document.removeEventListener("click", handleTableClick);
+}

@@ -31,4 +31,10 @@ public class UserJpaRepository implements UserRepository {
         UserEntity saved = jpa.save(entity);
         return new User(saved.getId(), saved.getName(), saved.getEmail(), saved.getPassword());
     }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return jpa.findById(id)
+                  .map(e -> new User(e.getId(), e.getName(), e.getEmail(), e.getPassword()));
+    }
 }

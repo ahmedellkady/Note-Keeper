@@ -199,6 +199,20 @@ body {
   background-color: #f0c926;
 }
 
+button.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.save-button-floating:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+  background-color: #ccc !important;
+  color: #666 !important;
+}
+
 @media (max-width: 768px) {
     .toolbar {
         flex-wrap: wrap;
