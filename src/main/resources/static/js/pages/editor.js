@@ -5,9 +5,10 @@ setInterval(() => {
 }, 2000);
 
 document.addEventListener("DOMContentLoaded", () => {
-    const saved = localStorage.getItem("note-content");
-    if (saved) {
-        document.getElementById("editor").innerHTML = saved;
+    const note = JSON.parse(localStorage.getItem("currentNote"));
+    if (note && note.content) {
+        document.getElementById("note-title").textContent = note.title;
+        document.getElementById("editor").innerHTML = note.content;
     }
 });
 

@@ -93,12 +93,17 @@ body {
     color: #fed23b;
 }
 
-.notes-table .delete:hover {
+.notes-table .history:hover {
     color: #ff0000;
 }
 
-.notes-table .history:hover {
-    color: #000;
+.clickable-title {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.clickable-title:hover {
+    color: #fed23b;
 }
 
 .version-history-panel {
