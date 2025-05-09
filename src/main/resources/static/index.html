@@ -20,18 +20,22 @@
         <div class="page-container">
             <header class="top-bar">
                 <div class="top-left">
-                    <button class="new-note">+ New Note</button>
+                    <button class="new-note" id="createNoteBtn">+ New Note</button>
                     <input type="text" class="search" placeholder="Search notes" />
-                    <select class="filter">
+                    <select class="filter" id="tagFilter">
                         <option value="">Tags</option>
-                        <option>Work</option>
-                        <option>Personal</option>
+                        <option value="PERSONAL">PERSONAL</option>
+                        <option value="WORK">WORK</option>
+                        <option value="STUDY">STUDY</option>
+                        <option value="IMPORTANT">IMPORTANT</option>
+                        <option value="IDEA">WORK</option>
+                        <option value="OTHER">OTHER</option>
                     </select>
-                    <select class="filter">
+                    <!-- <select class="filter">
                         <option value="">Shared With</option>
                         <option>Only Me</option>
                         <option>Shared by Others</option>
-                    </select>
+                    </select> -->
                 </div>
             </header>
 
@@ -43,6 +47,7 @@
                                 <th>Title</th>
                                 <th>Owner</th>
                                 <th>Last Modified</th>
+                                <th>Tag</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -53,7 +58,7 @@
                                 <td>2 hours ago</td>
                                 <td>
                                     <button class="edit"><i class="fas fa-pen"></i></button>
-                                    <button class="delete"><i class="fas fa-trash"></i></button>
+                                    <!-- <button class="delete"><i class="fas fa-trash"></i></button> -->
                                     <button class="history"><i class="fas fa-clock-rotate-left"></i></button>
                                 </td>
                             </tr>
@@ -78,14 +83,17 @@
 
                 <label>Tags:</label>
                 <div class="tags">
-                    <label><input type="checkbox" value="Work" /> Work</label>
-                    <label><input type="checkbox" value="Personal" /> Personal</label>
-                    <label><input type="checkbox" value="Ideas" /> Ideas</label>
+                    <label><input type="radio" name="tag" value="PERSONAL" />  PERSONAL</label>
+                    <label><input type="radio" name="tag" value="WORK" /> WORK</label>
+                    <label><input type="radio" name="tag" value="STUDY" /> STUDY</label>
+                    <label><input type="radio" name="tag" value="IMPORTANT" /> IMPORTANT</label>
+                    <label><input type="radio" name="tag" value="IDEA" /> IDEA</label>
+                    <label><input type="radio" name="tag" value="OTHER" /> OTHER</label>
                 </div>
 
                 <div class="modal-actions">
-                    <button onclick="createNote()">Create</button>
-                    <button onclick="closeModal()">Cancel</button>
+                    <button id="createNoteSubmitBtn">Create</button>
+                    <button id="cancelCreateNoteBtn">Cancel</button>
                 </div>
             </div>
         </div>
@@ -98,13 +106,13 @@
 
                 <label for="permission">Permission:</label>
                 <select id="permission">
-                    <option value="view">View</option>
-                    <option value="edit">Edit</option>
+                    <option value="VIEW">View</option>
+                    <option value="EDIT">Edit</option>
                 </select>
 
                 <div class="modal-actions">
-                    <button onclick="shareNote()">Share</button>
-                    <button onclick="closeShareModal()">Cancel</button>
+                    <button id="shareBtn">Share</button>
+                    <button id="cancelShareBtn">Cancel</button>
                 </div>
             </div>
         </div>
@@ -112,7 +120,7 @@
     </div>
 
     <script src="js/component-loader.js"></script>
-    <script src="js/pages/index.js"></script>
+    <script type="module" src="js/pages/index.js"></script>
 </body>
 
 </html>
