@@ -7,6 +7,7 @@ import com.example.note_keeper.infrastructure.persistence.entity.NoteVersionEnti
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -46,4 +47,18 @@ public class NoteVersionJpaRepository implements NoteVersionRepository {
             return version;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<NoteVersion> findById(Long versionId) {
+        return jpa.findById(versionId).map(e -> {
+            NoteVersion v = new NoteVersion();
+            v.setId(e.getId());
+            v.setNoteId(e.getNote().getId());
+            v.setTitle(e.getTitle());
+            v.setContent(e.getContent());
+            v.setCreatedAt(e.getCreatedAt());
+            return v;
+        });
+    }
+
 }

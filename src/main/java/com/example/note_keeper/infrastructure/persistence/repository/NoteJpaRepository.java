@@ -5,7 +5,9 @@ import com.example.note_keeper.domain.repository.NoteRepository;
 import com.example.note_keeper.infrastructure.persistence.entity.NoteEntity;
 import com.example.note_keeper.infrastructure.persistence.entity.UserEntity;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
@@ -67,6 +69,21 @@ public class NoteJpaRepository implements NoteRepository {
             note.setTag(entity.getTag());
             return note;
         });
+    }
+
+    @Override
+    public List<Note> findByUserId(Long userId) {
+        return jpa.findByUserId(userId).stream().map(entity -> {
+            Note note = new Note();
+            note.setId(entity.getId());
+            note.setTitle(entity.getTitle());
+            note.setContent(entity.getContent());
+            note.setCreatedAt(entity.getCreatedAt());
+            note.setUpdatedAt(entity.getUpdatedAt());
+            note.setUserId(entity.getUser().getId());
+            note.setTag(entity.getTag());
+            return note;
+        }).collect(Collectors.toList());
     }
 
 }

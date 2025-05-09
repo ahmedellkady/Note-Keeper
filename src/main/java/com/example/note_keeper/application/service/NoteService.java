@@ -78,4 +78,45 @@ public class NoteService {
                 updated.getTag());
     }
 
+    public List<NoteResponse> getNotesByUserId(Long userId) {
+        return noteRepository.findByUserId(userId).stream()
+                .map(note -> new NoteResponse(
+                        note.getId(),
+                        note.getTitle(),
+                        note.getContent(),
+                        note.getCreatedAt(),
+                        note.getUpdatedAt(),
+                        note.getTag()))
+                .collect(Collectors.toList());
+    }
+
+    public NoteResponse restoreVersion(Long noteId, Long versionId) {
+        Note note = noteRepository.findById(noteId)
+                .orElseThrow(() -> new IllegalArgumentException("Note not found"));
+
+        NoteVersion version = noteVersionRepository.findById(versionId)
+                .orElseThrow(() -> new IllegalArgumentException("Version not found"));
+
+        NoteVersion current = new NoteVersion();
+        current.setNoteId(note.getId());
+        current.setTitle(note.getTitle());
+        current.setContent(note.getContent());
+        current.setCreatedAt(LocalDateTime.now());
+        noteVersionRepository.save(current);
+
+        note.setTitle(version.getTitle());
+        note.setContent(version.getContent());
+        note.setUpdatedAt(LocalDateTime.now());
+
+        Note updated = noteRepository.save(note);
+
+        return new NoteResponse(
+                updated.getId(),
+                updated.getTitle(),
+                updated.getContent(),
+                updated.getCreatedAt(),
+                updated.getUpdatedAt(),
+                updated.getTag());
+    }
+
 }
