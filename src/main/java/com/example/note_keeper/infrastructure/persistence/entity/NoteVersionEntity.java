@@ -11,7 +11,10 @@ public class NoteVersionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long noteId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "note_id")
+    private NoteEntity note;
+
     private String title;
 
     @Lob
@@ -28,12 +31,12 @@ public class NoteVersionEntity {
         this.id = id;
     }
 
-    public Long getNoteId() {
-        return noteId;
+    public NoteEntity getNote() {
+        return note;
     }
 
-    public void setNoteId(Long noteId) {
-        this.noteId = noteId;
+    public void setNote(NoteEntity note) {
+        this.note = note;
     }
 
     public String getTitle() {
@@ -60,5 +63,4 @@ public class NoteVersionEntity {
         this.createdAt = createdAt;
     }
 
-    
 }
