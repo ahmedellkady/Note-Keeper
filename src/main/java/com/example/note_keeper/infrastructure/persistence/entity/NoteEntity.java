@@ -32,6 +32,9 @@ public class NoteEntity {
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoteVersionEntity> versions;
 
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NoteShareEntity> noteShares;
+
     public Long getId() {
         return id;
     }
@@ -96,4 +99,11 @@ public class NoteEntity {
         this.versions = versions;
     }
 
+    public List<NoteShareEntity> getNoteShares() {
+        return noteShares;
+    }
+
+    public void setNoteShares(List<NoteShareEntity> noteShares) {
+        this.noteShares = noteShares;
+    }
 }

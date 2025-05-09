@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class NoteController {
     private final NoteService noteService;
 
+
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
     }
@@ -43,6 +44,14 @@ public class NoteController {
     public ResponseEntity<NoteResponse> restoreVersion(@PathVariable Long noteId,
             @PathVariable Long versionId) {
         return ResponseEntity.ok(noteService.restoreVersion(noteId, versionId));
+    }
+
+    @PostMapping("/{noteId}/share")
+    public ResponseEntity<Void> shareNote(@PathVariable Long noteId,
+                                          @RequestBody ShareNoteRequest request) {
+        request.setNoteId(noteId);
+        noteService.shareNote(request);
+        return ResponseEntity.ok().build();
     }
 
 }

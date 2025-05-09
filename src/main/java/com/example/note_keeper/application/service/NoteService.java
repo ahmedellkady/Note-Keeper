@@ -2,8 +2,10 @@ package com.example.note_keeper.application.service;
 
 import com.example.note_keeper.application.dto.*;
 import com.example.note_keeper.domain.model.Note;
+import com.example.note_keeper.domain.model.NoteShare;
 import com.example.note_keeper.domain.model.NoteVersion;
 import com.example.note_keeper.domain.repository.NoteRepository;
+import com.example.note_keeper.domain.repository.NoteShareRepository;
 import com.example.note_keeper.domain.repository.NoteVersionRepository;
 
 import org.springframework.stereotype.Service;
@@ -16,10 +18,12 @@ import java.util.stream.Collectors;
 public class NoteService {
     private final NoteRepository noteRepository;
     private final NoteVersionRepository noteVersionRepository;
+    private final NoteShareRepository noteShareRepository;
 
-    public NoteService(NoteRepository noteRepository, NoteVersionRepository noteVersionRepository) {
+    public NoteService(NoteRepository noteRepository, NoteVersionRepository noteVersionRepository, NoteShareRepository noteShareRepository) {
         this.noteRepository = noteRepository;
         this.noteVersionRepository = noteVersionRepository;
+        this.noteShareRepository = noteShareRepository;
     }
 
     public NoteResponse addNote(NoteRequest request) {
@@ -117,6 +121,14 @@ public class NoteService {
                 updated.getCreatedAt(),
                 updated.getUpdatedAt(),
                 updated.getTag());
+    }
+
+    public void shareNote(ShareNoteRequest request) {
+        NoteShare share = new NoteShare();
+        share.setNoteId(request.getNoteId());
+        share.setSharedWithUserEmail(request.getSharedWithUserEmail());
+        share.setPermission(request.getPermission());
+        noteShareRepository.save(share);
     }
 
 }
