@@ -34,6 +34,13 @@ body {
     font-size: clamp(1.25rem, 5vw, 1.75rem);
 }
 
+#note-title[contenteditable="true"] {
+  outline: none;
+  border-bottom: 1px dashed #ccc;
+  padding: 4px;
+  cursor: text;
+}
+
 .toolbar {
     display: flex;
     flex-wrap: wrap;
@@ -169,6 +176,27 @@ body {
 
 .table-controls button:hover {
     background-color: #ddd;
+}
+
+.save-button-floating {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #fed23b;
+  color: #0c1224;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 1000;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.save-button-floating:hover {
+  background-color: #f0c926;
 }
 
 @media (max-width: 768px) {
