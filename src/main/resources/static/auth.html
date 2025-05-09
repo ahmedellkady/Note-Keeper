@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Donation Platform - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login-Page</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/components/navbar.css">
+    <link rel="stylesheet" href="css/components/footer.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div data-include="components/navbar.html"></div>
+
+        <div class="container">
+            <br><br>
+            <input type="checkbox" id="flip">
+            <div class="cover">
+                <div class="front">
+                    <img src="Assets/img/front-img.png" alt="">
+                </div>
+            </div>
+            <div class="forms">
+                <div class="form-content">
+                    <div class="login-form">
+                        <div class="title">Login</div>
+                        <form id="loginForm" method="POST">
+                            <div class="input-boxes">
+                                <div class="input-box">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="text" id="loginEmail" name="Email1" placeholder="Enter your name"
+                                        required>
+                                </div>
+                                <div class="input-box">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="loginPassword" name="Password1"
+                                        placeholder="Enter your password" required>
+                                </div>
+                                <div class="text"><a href="#">Forgot password?</a></div>
+                                <div id="loginError" class="error-message" style="display: none;"></div>
+                                <div class="button input-box">
+                                    <input type="submit" id="loginSubmit" value="Login">
+                                </div>
+                                <div class="text sign-up-text">Don't have an account? <label for="flip">Signup
+                                        now</label></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="signup-form">
+                        <div class="title">Signup</div>
+                        <div id="signupMessage" style="display: none;">NOW YOU HAVE TO LOGIN</div>
+                        <form id="signupForm" method="post">
+                            <div class="input-boxes">
+
+                                <!-- Name -->
+                                <div class="input-box">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="name" name="name" placeholder="Enter your name" minlength="3"
+                                        maxlength="20" required>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="input-box">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" id="signupEmail" name="email" placeholder="Enter your email"
+                                        required>
+                                </div>
+
+                                <!-- Password -->
+                                <div class="input-box">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="signupPassword" name="password"
+                                        placeholder="Enter your password" minlength="8" required>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="button input-box">
+                                    <input type="submit" id="signupSubmit" value="Submit">
+                                </div>
+
+                                <div class="text sign-up-text">Already have an account? <label for="flip">Login
+                                        now</label></div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div data-include="components/footer.html"></div>
+    </div>
+
+    <script src="js/component-loader.js"></script>
+    <script type="module" src="js/pages/auth.js"></script>
+</body>
+
+</html>
