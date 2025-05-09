@@ -18,6 +18,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<NoteEntity> notes;
 
+    @OneToMany(mappedBy = "sharedWithUser")
+    private List<NoteShareEntity> noteShares;
+
     public Long getId() {
         return id;
     }
@@ -58,5 +61,11 @@ public class UserEntity {
         this.notes = notes;
     }
 
-    
+    public List<NoteShareEntity> getNoteShares() {
+        return noteShares;
+    }
+
+    public void setNoteShares(List<NoteShareEntity> noteShares) {
+        this.noteShares = noteShares;
+    }
 }
