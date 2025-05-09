@@ -33,4 +33,16 @@ public class NoteController {
         request.setId(id);
         return ResponseEntity.ok(noteService.updateNote(request));
     }
+
+    @GetMapping("/{userId}/notes")
+    public ResponseEntity<List<NoteResponse>> getNotesByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(noteService.getNotesByUserId(userId));
+    }
+
+    @PutMapping("/{noteId}/restore/{versionId}")
+    public ResponseEntity<NoteResponse> restoreVersion(@PathVariable Long noteId,
+            @PathVariable Long versionId) {
+        return ResponseEntity.ok(noteService.restoreVersion(noteId, versionId));
+    }
+
 }
