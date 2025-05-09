@@ -3,6 +3,7 @@ package com.example.note_keeper.infrastructure.persistence.repository;
 import com.example.note_keeper.domain.model.Note;
 import com.example.note_keeper.domain.repository.NoteRepository;
 import com.example.note_keeper.infrastructure.persistence.entity.NoteEntity;
+import com.example.note_keeper.infrastructure.persistence.entity.UserEntity;
 
 import java.util.Optional;
 
@@ -11,17 +12,30 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class NoteJpaRepository implements NoteRepository {
     private final NoteJpaInterface jpa;
+    private final UserJpaInterface userJpaInterface;
 
-    public NoteJpaRepository(NoteJpaInterface jpa) {
+    public NoteJpaRepository(NoteJpaInterface jpa, UserJpaInterface userJpaInterface) {
         this.jpa = jpa;
+        this.userJpaInterface = userJpaInterface;
     }
 
     @Override
     public Note save(Note note) {
-        NoteEntity entity = new NoteEntity();
+        NoteEntity entity;
+
+        if (note.getId() == null) {
+            entity = new NoteEntity();
+        } else {
+            entity = jpa.findById(note.getId()).orElse(new NoteEntity());
+            entity.setId(note.getId());
+        }
+
+        UserEntity user = userJpaInterface.findById(note.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + note.getUserId()));
+
         entity.setTitle(note.getTitle());
         entity.setContent(note.getContent());
-        entity.setUserId(note.getUserId());
+        entity.setUser(user);
         entity.setCreatedAt(note.getCreatedAt());
         entity.setUpdatedAt(note.getUpdatedAt());
         entity.setTag(note.getTag());
@@ -34,7 +48,7 @@ public class NoteJpaRepository implements NoteRepository {
         result.setContent(saved.getContent());
         result.setCreatedAt(saved.getCreatedAt());
         result.setUpdatedAt(saved.getUpdatedAt());
-        result.setUserId(saved.getUserId());
+        result.setUserId(saved.getUser().getId());
         result.setTag(saved.getTag());
 
         return result;
@@ -49,7 +63,7 @@ public class NoteJpaRepository implements NoteRepository {
             note.setContent(entity.getContent());
             note.setCreatedAt(entity.getCreatedAt());
             note.setUpdatedAt(entity.getUpdatedAt());
-            note.setUserId(entity.getUserId());
+            note.setUserId(entity.getUser().getId());
             note.setTag(entity.getTag());
             return note;
         });

@@ -2,6 +2,7 @@ package com.example.note_keeper.infrastructure.persistence.repository;
 
 import com.example.note_keeper.domain.model.NoteVersion;
 import com.example.note_keeper.domain.repository.NoteVersionRepository;
+import com.example.note_keeper.infrastructure.persistence.entity.NoteEntity;
 import com.example.note_keeper.infrastructure.persistence.entity.NoteVersionEntity;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +21,10 @@ public class NoteVersionJpaRepository implements NoteVersionRepository {
     @Override
     public NoteVersion save(NoteVersion version) {
         NoteVersionEntity entity = new NoteVersionEntity();
-        entity.setNoteId(version.getNoteId());
+        NoteEntity note = new NoteEntity();
+        note.setId(version.getNoteId());
+
+        entity.setNote(note);
         entity.setTitle(version.getTitle());
         entity.setContent(version.getContent());
         entity.setCreatedAt(version.getCreatedAt());
@@ -35,12 +39,11 @@ public class NoteVersionJpaRepository implements NoteVersionRepository {
         return jpa.findByNoteId(noteId).stream().map((NoteVersionEntity e) -> {
             NoteVersion version = new NoteVersion();
             version.setId(e.getId());
-            version.setNoteId(e.getNoteId());
+            version.setNoteId(e.getNote().getId());
             version.setTitle(e.getTitle());
             version.setContent(e.getContent());
             version.setCreatedAt(e.getCreatedAt());
             return version;
         }).collect(Collectors.toList());
-
     }
 }
